@@ -3,6 +3,8 @@ package se.disabledsecurity.bus.route.service;
 
 import org.springframework.stereotype.Service;
 import se.disabledsecurity.bus.route.clients.TrafikLabClient;
+import se.disabledsecurity.bus.route.exception.BusLineNotFoundException;
+import se.disabledsecurity.bus.route.exception.StopPointNotFoundException;
 import se.disabledsecurity.bus.route.model.external.Line;
 import se.disabledsecurity.bus.route.model.external.Route;
 import se.disabledsecurity.bus.route.model.external.StopPoint;
@@ -75,7 +77,7 @@ public class SwedishCommuterInformationService implements CommuterInformationSer
 		List<Route> routes =
 				Optional
 						.ofNullable(allRouteByLine.get(lineNumber))
-						.orElseThrow(() -> new RuntimeException("No bus line exists for number: " + lineNumber));
+						.orElseThrow(() -> new BusLineNotFoundException("No bus line exists for number: " + lineNumber));
 
 		return routes.stream()
 											 .map(Route::journeyPatternPointNumber)
@@ -88,6 +90,6 @@ public class SwedishCommuterInformationService implements CommuterInformationSer
 							  .stream()
 							  .filter(stopPoint -> stopPoint.stopPointNumber() == pointNumber)
 							  .findFirst()
-							  .orElseThrow(() -> new IllegalStateException("No stop point details could be found for point number: " + pointNumber));
+							  .orElseThrow(() -> new StopPointNotFoundException("No stop point details could be found for point number: " + pointNumber));
 	}
 }
